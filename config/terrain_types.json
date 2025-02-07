@@ -1,0 +1,79 @@
+{
+    "plains": {
+        "color": "#90EE90",
+        "icon": "🌿",
+        "movement_cost": 1
+    },
+    "forest": {
+        "color": "#228B22",
+        "icon": "🌳",
+        "movement_cost": 2
+    },
+    "mountain": {
+        "color": "#808080",
+        "icon": "⛰️",
+        "movement_cost": 3
+    },
+    "deep_water": {
+        "color": "#0066CC",
+        "icon": "",
+        "movement_cost": 3
+    },
+    "shallow_water": {
+        "color": "#66B2FF",
+        "icon": "",
+        "movement_cost": 2
+    },
+    "desert": {
+        "color": "#F4A460",
+        "icon": "🏜️",
+        "movement_cost": 2
+    },
+    "swamp": {
+        "color": "#4A5D23",
+        "icon": "🌱",
+        "movement_cost": 3
+    },
+    "hills": {
+        "color": "#8B4513",
+        "icon": "⛰️",
+        "movement_cost": 2
+    },
+    "volcano": {
+        "color": "#8B0000",
+        "icon": "🌋",
+        "movement_cost": 4
+    },
+    "ice": {
+        "color": "#E0FFFF",
+        "icon": "❄️",
+        "movement_cost": 2
+    },
+    "jungle": {
+        "color": "#006400",
+        "icon": "🌴",
+        "movement_cost": 3
+    },
+    "grassland": {
+        "color": "#98FB98",
+        "icon": "🌾",
+        "movement_cost": 1
+    },
+    "rocky": {
+        "color": "#A0522D",
+        "icon": "🪨",
+        "movement_cost": 2
+    },
+    "S": {
+        "color": "#000000",
+        "text_color": "#FFFFFF",
+        "icon": "S",
+        "movement_cost": 1
+    },
+    "E": {
+        "color": "#000000",
+        "text_color": "#FFFFFF",
+        "icon": "E",
+        "movement_cost": 1
+    }
+}

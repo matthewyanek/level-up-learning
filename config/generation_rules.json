@@ -1,0 +1,21 @@
+{
+    "size_limits": {
+        "min_rows": 5,
+        "max_rows": 50,
+        "min_cols": 5,
+        "max_cols": 50
+    },
+    "pattern_rules": {
+        "island": {
+            "center_weight": 0.8,
+            "edge_fade": 0.2
+        },
+        "river": {
+            "meander_factor": 0.3,
+            "width_range": [1, 3]
+        },
+        "coast": {
+            "width_range": [0.2, 0.4]
+        }
+    }
+}

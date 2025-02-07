@@ -1,0 +1,17 @@
+{
+    "default_size": {
+        "width": 600,
+        "height": 400
+    },
+    "padding": 10,
+    "background": "#23272A",
+    "cell_settings": {
+        "min_size": 20,
+        "outline_width": 1,
+        "outline_color": "#000000"
+    },
+    "icon_settings": {
+        "font_family": "TkDefaultFont",
+        "size_ratio": 0.5
+    }
+}

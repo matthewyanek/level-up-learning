@@ -1,0 +1,35 @@
+{
+    "colors": {
+        "bg_color": "#313A5C",
+        "fg_color": "#E0E0E0",
+        "button_color": "#414B75",
+        "canvas_bg": "#8399A6"
+    },
+    "map_types": [
+        "Random",
+        "Island",
+        "Coast",
+        "River Vertical",
+        "River Horizontal"
+    ],
+    "generation_settings": {
+        "random": {
+            "water_percentage": 0.15
+        },
+        "coast": {
+            "min_width_percentage": 0.2,
+            "max_width_percentage": 0.4,
+            "variation_range": [-1, 1]
+        },
+        "river": {
+            "min_width": 1,
+            "max_width": 3, 
+            "meander_chance": 0.3,
+            "meander_range": [-1, 1]
+        },
+        "island": {
+            "deep_water_threshold": 0.8,
+            "shallow_water_threshold": 0.6
+        }
+    }
+}

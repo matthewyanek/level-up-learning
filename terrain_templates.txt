@@ -1,0 +1,9 @@
+keep: A {adjective} keep stands {feature}, its walls {description}., The keep is a {adjective} structure, known for its {feature}.
+tower: A {adjective} tower rises above the landscape, its purpose {description}., The tower is {adjective}, with {feature}.
+castle: A {adjective} castle dominates the horizon, its {feature}., The castle is a {adjective} place, filled with {activity}.
+thorp: A {adjective} thorp lies ahead, its {feature}., The thorp is {adjective}, with {description}.
+village: A {adjective} village with {feature}., The village is known for its {feature} and {activity}.
+town: A {adjective} town with {feature}., The town is a {adjective} place, bustling with {activity}.
+large-town: A {adjective} large town with {feature}., The town is a {adjective} center of {activity}.
+city: A {adjective} city with {feature}., The city is a {adjective} hub of {activity}.
+shrine: A {adjective} shrine, surrounded by {feature}., The shrine is a {adjective} place of {description}.
