@@ -1,173 +1,122 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
-import json
-import os
+from tkinter import ttk
+from .components.sidebar import Sidebar
+from .components.topbar import Topbar
+from .components.map_area import MapArea
+from .styles.color_schemes import ColorScheme
 
 class UIManager:
-    def __init__(self, root, configs):
+    def __init__(self, root):
         self.root = root
-        self.configs = configs
-        self.canvas = None
-        self.rows_entry = None
-        self.cols_entry = None
-        self.map_type_var = None
-        self.on_load_callback = None
-        self.on_save_callback = None
-        self.current_map = None
-        self.map_drawer = None
+        self.root.title("Level Up Learning")
+        self.root.geometry("1400x900")  # Increased window size
+        
+        # Configure root grid
+        self.root.grid_columnconfigure(1, weight=1)
+        self.root.grid_rowconfigure(0, weight=1)
+        
+        # Initialize variables
+        self.pages = {}
+        self.is_fullscreen = False
+        
+        # Setup styles
+        self.setup_styles()
+        
+        # Create main UI elements
+        self.sidebar = Sidebar(self.root)
+        self.sidebar.set_page_callback(self.show_page)
+        self._create_pages()
+        
+        # Show default page
+        self.show_page("Map Generator")
 
-    def setup_ui(self):
-        # Create main container
-        main_frame = ttk.Frame(self.root)
-        main_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+        # Bind fullscreen toggle
+        self.root.bind("<F11>", self.toggle_fullscreen)
+        self.root.bind("<Escape>", self.exit_fullscreen)
 
-        # Create control panel
-        control_panel = self.create_control_panel(main_frame)
-        control_panel.pack(fill=tk.X, pady=(0, 10))
-
-        # Create canvas
-        self.canvas = tk.Canvas(
-            main_frame,
-            bg="#23272A",
-            width=600,
-            height=400
+    def setup_styles(self):
+        style = ttk.Style()
+        
+        # Entry style
+        style.configure(
+            "Modern.TEntry",
+            fieldbackground="white",
+            foreground=ColorScheme.TEXT_MUTED,
+            borderwidth=0,
+            relief="flat",
+            padding=(8, 5.5)
         )
-        self.canvas.pack(fill=tk.BOTH, expand=True)
-
-        # Bind mouse wheel and key events for zoom
-        self.canvas.bind('<MouseWheel>', self.on_mousewheel)  # Windows
-        self.canvas.bind('<Button-4>', self.on_mousewheel)    # Linux up
-        self.canvas.bind('<Button-5>', self.on_mousewheel)    # Linux down
-        self.root.bind('<Key>', self.on_key)
-
-    def create_control_panel(self, parent):
-        control_frame = ttk.Frame(parent)
-
-        # Left side controls (dimensions and map type)
-        left_frame = ttk.Frame(control_frame)
-        left_frame.pack(side=tk.LEFT, padx=5)
-
-        # Dimensions controls
-        dims_frame = ttk.Frame(left_frame)
-        dims_frame.pack(side=tk.LEFT, padx=5)
-
-        ttk.Label(dims_frame, text="Rows:").pack(side=tk.LEFT)
-        self.rows_entry = ttk.Entry(dims_frame, width=5)
-        self.rows_entry.insert(0, "25")
-        self.rows_entry.pack(side=tk.LEFT, padx=5)
-
-        ttk.Label(dims_frame, text="Cols:").pack(side=tk.LEFT)
-        self.cols_entry = ttk.Entry(dims_frame, width=5)
-        self.cols_entry.insert(0, "25")
-        self.cols_entry.pack(side=tk.LEFT, padx=5)
-
-        # Map type selection
-        type_frame = ttk.Frame(left_frame)
-        type_frame.pack(side=tk.LEFT, padx=5)
-
-        ttk.Label(type_frame, text="Map Type:").pack(side=tk.LEFT)
-        self.map_type_var = tk.StringVar(value="Random")
-        map_type_menu = ttk.OptionMenu(
-            type_frame,
-            self.map_type_var,
-            "Random",
-            "Random",
-            "Island",
-            "Coast",
-            "River Vertical",
-            "River Horizontal"
+        
+        # Combobox style
+        style.configure(
+            "Modern.TCombobox",
+            background="white",
+            fieldbackground="white",
+            foreground=ColorScheme.TEXT_MUTED,
+            borderwidth=0,
+            relief="flat",
+            padding=(8, 7),
+            arrowsize=12
         )
-        map_type_menu.pack(side=tk.LEFT, padx=5)
-
-        # Right side controls
-        right_frame = ttk.Frame(control_frame)
-        right_frame.pack(side=tk.RIGHT, padx=5)
-
-        # Add zoom buttons
-        zoom_frame = ttk.Frame(right_frame)
-        zoom_frame.pack(side=tk.LEFT, padx=5)
-
-        zoom_in_btn = ttk.Button(
-            zoom_frame,
-            text="Zoom In (+)",
-            command=lambda: self.zoom(1.1)
+        
+        style.map('Modern.TCombobox',
+            fieldbackground=[('readonly', 'white')],
+            selectbackground=[('readonly', 'white')],
+            foreground=[('readonly', ColorScheme.TEXT_MUTED)]
         )
-        zoom_in_btn.pack(side=tk.LEFT, padx=2)
 
-        zoom_out_btn = ttk.Button(
-            zoom_frame,
-            text="Zoom Out (-)",
-            command=lambda: self.zoom(0.9)
+        # Override system colors
+        self.root.option_add('*TCombobox*Listbox.background', 'white')
+        self.root.option_add('*TCombobox*Listbox.foreground', ColorScheme.TEXT_MUTED)
+        self.root.option_add('*TCombobox*Listbox.selectBackground', 'white')
+        self.root.option_add('*TCombobox*Listbox.selectForeground', ColorScheme.TEXT_MUTED)
+        self.root.option_add('*TCombobox*Listbox.highlightThickness', '0')
+        self.root.option_add('*TCombobox*Listbox.relief', 'flat')
+
+    def _create_pages(self):
+        # Map Generator page
+        map_page = tk.Frame(self.root, bg=ColorScheme.PRIMARY_DARK)
+        self.topbar = Topbar(map_page)  # Create topbar first
+        self.map_area = MapArea(map_page, self.topbar)  # Create map_area second
+        self.topbar.map_area = self.map_area  # Set map_area reference in topbar
+        self.pages["Map Generator"] = map_page
+        
+        # Characters page
+        char_page = tk.Frame(self.root, bg=ColorScheme.PRIMARY_DARK)
+        self._create_characters_page(char_page)
+        self.pages["Characters"] = char_page
+        
+        # Hide all pages initially
+        for page in self.pages.values():
+            page.grid_remove()
+
+    def _create_characters_page(self, container):
+        title = tk.Label(
+            container,
+            text="Characters",
+            font=('TkDefaultFont', 20),
+            fg=ColorScheme.TEXT_LIGHT,
+            bg=ColorScheme.PRIMARY_DARK
         )
-        zoom_out_btn.pack(side=tk.LEFT, padx=2)
+        title.pack(pady=20)
 
-        # Add save/load buttons
-        save_btn = ttk.Button(
-            right_frame,
-            text="Save Map",
-            command=self.save_map
-        )
-        save_btn.pack(side=tk.RIGHT, padx=5)
+    def show_page(self, page_name):
+        # Hide all pages
+        for page in self.pages.values():
+            page.grid_remove()
+        
+        # Show selected page
+        if page_name in self.pages:
+            self.pages[page_name].grid(row=0, column=1, sticky="nsew")
 
-        load_btn = ttk.Button(
-            right_frame,
-            text="Load Map",
-            command=self.load_map
-        )
-        load_btn.pack(side=tk.RIGHT, padx=5)
+    def toggle_fullscreen(self, event=None):
+        self.is_fullscreen = not self.is_fullscreen
+        self.root.attributes("-fullscreen", self.is_fullscreen)
 
-        return control_frame
+    def exit_fullscreen(self, event=None):
+        self.is_fullscreen = False
+        self.root.attributes("-fullscreen", False)
 
-    def get_map_settings(self):
-        try:
-            rows = int(self.rows_entry.get())
-            cols = int(self.cols_entry.get())
-            map_type = self.map_type_var.get()
-            
-            if not (5 <= rows <= 50 and 5 <= cols <= 50):
-                raise ValueError("Dimensions must be between 5 and 50")
-                
-            return rows, cols, map_type
-        except ValueError as e:
-            messagebox.showerror("Invalid Input", str(e))
-            return None
-
-    def save_map(self):
-        if self.on_save_callback:
-            file_path = filedialog.asksaveasfilename(
-                defaultextension=".json",
-                filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-                initialdir=os.path.join(os.path.dirname(os.path.dirname(__file__)), "maps")
-            )
-            if file_path:
-                self.on_save_callback(file_path)
-
-    def load_map(self):
-        if self.on_load_callback:
-            file_path = filedialog.askopenfilename(
-                defaultextension=".json",
-                filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-                initialdir=os.path.join(os.path.dirname(os.path.dirname(__file__)), "maps")
-            )
-            if file_path:
-                self.on_load_callback(file_path)
-
-    def on_mousewheel(self, event):
-        # Handle different systems' mousewheel events
-        if event.num == 5 or event.delta < 0:
-            self.zoom(0.9)
-        if event.num == 4 or event.delta > 0:
-            self.zoom(1.1)
-
-    def on_key(self, event):
-        if event.char == '+' or event.char == '=':
-            self.zoom(1.1)
-        elif event.char == '-' or event.char == '_':
-            self.zoom(0.9)
-
-    def zoom(self, factor):
-        if self.map_drawer:
-            self.map_drawer.zoom(factor)
-
-    def set_map_drawer(self, map_drawer):
-        self.map_drawer = map_drawer
+    def run(self):
+        """Start the application main loop"""
+        self.root.mainloop()

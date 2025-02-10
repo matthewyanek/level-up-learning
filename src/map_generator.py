@@ -2,10 +2,25 @@ import random
 import math
 
 class MapGenerator:
-    def __init__(self, configs):
-        self.configs = configs
-        self.terrain_types = configs['terrain_types']
-        self.patterns = configs['map_patterns']
+    def __init__(self):
+        # Define patterns
+        self.patterns = {
+            'random': {
+                'terrain_weights': {
+                    'plains': 0.15,
+                    'forest': 0.15,
+                    'hills': 0.1,
+                    'mountain': 0.1,
+                    'shallow_water': 0.1,
+                    'desert': 0.1,
+                    'swamp': 0.05,
+                    'grassland': 0.1,
+                    'jungle': 0.05,
+                    'rocky': 0.05,
+                    'ice': 0.05
+                }
+            }
+        }
 
     def create_map(self, rows, cols, map_type):
         map_type = map_type.lower()
@@ -31,13 +46,9 @@ class MapGenerator:
         terrains = [[None for _ in range(cols)] for _ in range(rows)]
         weights = self.patterns['random']['terrain_weights']
         
-        valid_terrains = []
-        valid_weights = []
-        for terrain, weight in weights.items():
-            if terrain in self.terrain_types:
-                valid_terrains.append(terrain)
-                valid_weights.append(weight)
-
+        valid_terrains = list(weights.keys())
+        valid_weights = list(weights.values())
+        
         total_weight = sum(valid_weights)
         valid_weights = [w/total_weight for w in valid_weights]
 
@@ -62,7 +73,7 @@ class MapGenerator:
                 normalized_distance = distance / max_distance
                 
                 if normalized_distance < 0.25:
-                    terrains[row][col] = random.choice(["plains", "forest", "hills"])
+                    terrains[row][col] = random.choice(["plains", "forest", "hills", "grassland"])
                 elif normalized_distance < 0.35:
                     terrains[row][col] = random.choice(["plains", "forest", "hills", "mountain"])
                 elif normalized_distance < 0.45:
@@ -87,12 +98,13 @@ class MapGenerator:
                 elif col > local_coast:
                     terrains[row][col] = "shallow_water"
                 else:
-                    terrains[row][col] = random.choice(["plains", "forest", "hills", "mountain"])
+                    terrains[row][col] = random.choice(["plains", "forest", "hills", "mountain", "grassland"])
         
         return terrains
 
     def generate_river_pattern(self, rows, cols, direction):
-        terrains = [[random.choice(["plains", "forest", "hills", "mountain"]) for _ in range(cols)] for _ in range(rows)]
+        terrains = [[random.choice(["plains", "forest", "hills", "mountain", "grassland"]) 
+                    for _ in range(cols)] for _ in range(rows)]
         
         if direction == "vertical":
             river_col = cols // 2
