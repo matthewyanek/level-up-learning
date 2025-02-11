@@ -40,18 +40,19 @@ class Sidebar:
             bg=ColorScheme.PRIMARY_BLUE,
             width=50
         )
-        toggle_inner.pack(side="left")
+        toggle_inner.pack(side="left", padx=16)  # Added padx here to match other icons
         
         self.toggle_btn = tk.Label(
             toggle_inner,
             text="≡",
             bg=ColorScheme.PRIMARY_BLUE,
             fg=ColorScheme.TEXT_LIGHT,
-            font=('TkDefaultFont', 14),
+            font=('TkDefaultFont', 20),
             anchor="center"
         )
-        self.toggle_btn.pack(side="left", padx=15)
+        self.toggle_btn.pack()  # Removed side="left" and padx to center in toggle_inner
         self.toggle_btn.bind("<Button-1>", lambda e: self.toggle_sidebar())
+
 
     def create_sidebar_button(self, text, row):
         container = tk.Frame(
