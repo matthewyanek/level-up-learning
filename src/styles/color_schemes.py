@@ -5,6 +5,7 @@ class ColorScheme:
     ACCENT_ORANGE = "#E48260"   # Orange accent
     ACCENT_PINK = "#A2799A"     # Pink accent
     TEXT_LIGHT = "#F9FAFB"      # Light text
+    TEXT_DARK = "#121725"
     TEXT_MUTED = "#6B7280"      # Lighter gray for placeholder text
     BORDER_COLOR = "#374151"    # Darker gray for borders
     HOVER = "#E48260"           # Hover state blue

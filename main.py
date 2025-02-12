@@ -1,10 +1,7 @@
 import tkinter as tk
 from src.ui_manager import UIManager
 
-def main():
+if __name__ == "__main__":
     root = tk.Tk()
     app = UIManager(root)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()  
+    app.run()

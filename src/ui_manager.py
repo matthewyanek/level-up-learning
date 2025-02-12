@@ -1,9 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-from .components.sidebar import Sidebar
-from .components.topbar import Topbar
-from .components.map_area import MapArea
-from .styles.color_schemes import ColorScheme
+from src.components.sidebar import Sidebar
+from src.components.topbar import Topbar
+from src.components.map_area import MapArea
+from src.components.character_creation import CharacterCreation
+from src.styles.color_schemes import ColorScheme
 
 class UIManager:
     def __init__(self, root):
@@ -83,17 +84,37 @@ class UIManager:
         
         # Characters page
         char_page = tk.Frame(self.root, bg=ColorScheme.PRIMARY_DARK)
-        self._create_characters_page(char_page)
+        self.character_creation = CharacterCreation(char_page)  # Create character creation instance
         self.pages["Characters"] = char_page
+        
+        # Scenarios page (placeholder)
+        scenarios_page = tk.Frame(self.root, bg=ColorScheme.PRIMARY_DARK)
+        self._create_scenarios_page(scenarios_page)
+        self.pages["Scenarios"] = scenarios_page
+        
+        # Settings page (placeholder)
+        settings_page = tk.Frame(self.root, bg=ColorScheme.PRIMARY_DARK)
+        self._create_settings_page(settings_page)
+        self.pages["Settings"] = settings_page
         
         # Hide all pages initially
         for page in self.pages.values():
             page.grid_remove()
 
-    def _create_characters_page(self, container):
+    def _create_scenarios_page(self, container):
         title = tk.Label(
             container,
-            text="Characters",
+            text="Scenarios",
+            font=('TkDefaultFont', 20),
+            fg=ColorScheme.TEXT_LIGHT,
+            bg=ColorScheme.PRIMARY_DARK
+        )
+        title.pack(pady=20)
+
+    def _create_settings_page(self, container):
+        title = tk.Label(
+            container,
+            text="Settings",
             font=('TkDefaultFont', 20),
             fg=ColorScheme.TEXT_LIGHT,
             bg=ColorScheme.PRIMARY_DARK
